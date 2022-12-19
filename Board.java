@@ -59,6 +59,7 @@ public class Board implements ActionListener, Runnable
     {
         if (event.getSource() == guessButton)
         {
+            WordDictionary word = new WordDictionary();
             // Open another window
             //new PopUpWindow(this);
             guessButton.setEnabled(false);
