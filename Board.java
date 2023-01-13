@@ -5,14 +5,17 @@ import java.util.*;
 
 public class Board implements ActionListener, Runnable
 {
-    JFrame frame;
-    JPanel mainPanel;
-    JButton guessButton;
-    JLabel label;
-    JTextField[] guesses;
+    private JFrame frame;
+    private JPanel mainPanel;
+    private JButton guessButton;
+    private JLabel label;
+    private JTextField[] guesses;
+    private String winWord;
+    private int numOfGuess;
     
     public void run()
     {
+        numOfGuess = 0;
         // Create top-level container
         frame = new JFrame();
         frame.setSize(215, 300);
@@ -53,19 +56,45 @@ public class Board implements ActionListener, Runnable
         mainPanel.add(guessButton);
         
         frame.setVisible(true);
+        WordDictionary word = new WordDictionary();
+        try
+            {
+                 winWord = word.returnWord();
+            }
+            catch (java.io.IOException ioe)
+            {
+                ioe.printStackTrace();
+            }
+        System.out.println("Welcome to Wordle. Good Luck!");
     }
-    
-    public void actionPerformed(ActionEvent event)
-    {
-        if (event.getSource() == guessButton)
-        {
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == guessButton) {
             WordDictionary word = new WordDictionary();
-            // Open another window
-            //new PopUpWindow(this);
-            guessButton.setEnabled(false);
+            String guessWord = guesses[numOfGuess].getText();
+            //if(word.isWordValid(guessWord)) {
+                String resultString = "";
+                for(int i = 0; i < 5; i++){
+                    if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
+                        resultString += guessWord.substring(i,i+1).toUpperCase();
+                    }
+                    else if(winWord.contains(guessWord.substring(i,i+1))){
+                        resultString += guessWord.substring(i,i+1);
+                    }
+                    else {
+                        resultString += "-";
+                    }
+                }
+                guesses[numOfGuess].setEditable(false);
+                System.out.println(resultString);
+                numOfGuess++;
+                if (numOfGuess == 6) {
+                    System.out.println("The word was: " + winWord);
+                }
+            //} else {
+            //    System.out.println("Invalid Input");
+            //}
         }
     }
-    
     public void closePopUp(String toDisplay)
     {
         label.setText(toDisplay);

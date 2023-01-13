@@ -80,14 +80,11 @@ public class WordDictionary {
     public boolean isWordValid(String word){
         if(word == null){
             return false;
-        }
-        if(word.length() != 5){
+        } else if(word.length() != 5){
             return false;
-        }
-        if(RecursiveBinarySearch(words, word) != -1){
+        } else if(RecursiveBinarySearch(words, word) != -1){
             return true;
-        }
-        else{
+        } else{
             return false;
         }
     }
@@ -95,18 +92,16 @@ public class WordDictionary {
         return RecursionBinarySearch(arr, toFind, 0, arr.length - 1, arr.length / 2);
     }
     private static int RecursionBinarySearch(String[] arr, String toFind, int begin, int end, int mid){
+        System.out.println(arr[0]);
         if(arr[mid].equals(toFind)){
-                return mid;
-            }
-        if(((mid == begin && mid == end) && (!arr[mid].equals(toFind))) || !(end >= begin && end < arr.length && begin >= 0)){
+            return mid;
+        } else if(((mid == begin && mid == end) && (!arr[mid].equals(toFind))) || !(end >= begin && end < arr.length && begin >= 0)){
             return -1;
-        }
-        if(arr[mid].compareTo(toFind) < 0){
+        } else if(arr[mid].compareTo(toFind) < 0){
             begin = mid + 1;
             mid = (begin + end) / 2;
             return RecursionBinarySearch(arr, toFind, begin, end, mid);
-        }
-        else{
+        } else {
             end = mid - 1;
             mid = (begin + end) / 2;
             return RecursionBinarySearch(arr, toFind, begin, end, mid);
@@ -125,12 +120,12 @@ public class WordDictionary {
             curChecking = checkSave;
         }
     }
-    public String returnWord() throws Exception{
-        File file = new File("wordlewords.txt");
-        Scanner sc = new Scanner(file);
+    public String returnWord() throws IOException{
+        Scanner sc = new Scanner(new File("wordlewords.txt"));
         for(int i = 0; i < words.length; i++){
             words[i] = sc.nextLine();
             }
-            return words[(int)(Math.random()*words.length)];
+        String theWord = words[(int)(Math.random()*words.length)];
+        return theWord;
     }
 }
