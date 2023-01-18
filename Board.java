@@ -3,22 +3,24 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
-public class Board implements ActionListener, Runnable
+public class Board implements ActionListener, KeyListener, Runnable
 {
     private JFrame frame;
     private JPanel mainPanel;
     private JButton guessButton;
     private JLabel label;
-    private JTextField[] guesses;
+    private JTextField[][] guesses;
     private String winWord;
     private int numOfGuess;
+    private int curRow;
+    private int curCol;
     
     public void run()
     {
         numOfGuess = 0;
         // Create top-level container
         frame = new JFrame();
-        frame.setSize(215, 300);
+        frame.setSize(300, 300);
         frame.setLocation(100,100);
         frame.setTitle("Wordle");
         frame.setResizable(false);
@@ -39,13 +41,17 @@ public class Board implements ActionListener, Runnable
         guessButton.addActionListener(this);
         
         // Setup Text Field Array
-        guesses = new JTextField[6];
+        guesses = new JTextField[6][5];
         for(int i = 0; i < guesses.length; i++){
-            guesses[i] = new JTextField();
-            guesses[i].setSize(80, 30);
-            guesses[i].setLocation(65, i * 35 + 10);
-            guesses[i].setFont(font1);
-            mainPanel.add(guesses[i]);
+            int y = i * 35 + 10;
+            for(int j = 0; j < 5; j++){
+                guesses[i][j] = new JTextField();
+                guesses[i][j].setSize(30, 30);
+                guesses[i][j].setLocation(40 + j * 40, y);
+                guesses[i][j].setFont(font1);
+                guesses[i][j].addKeyListener(this);
+                mainPanel.add(guesses[i][j]);
+            }
         }
 
         label.setLocation(50, 50);
@@ -66,11 +72,17 @@ public class Board implements ActionListener, Runnable
                 ioe.printStackTrace();
             }
         System.out.println("Welcome to Wordle. Good Luck!");
+        curCol = 0;
+        curRow = 0;
+        setFocus(guesses[0][0]);
     }
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == guessButton) {
             WordDictionary word = new WordDictionary();
-            String guessWord = guesses[numOfGuess].getText();
+            String guessWord = "";
+            for(int i = 0; i < 5; i++){
+                guessWord = guessWord + guesses[numOfGuess][i];
+            }
             //if(word.isWordValid(guessWord)) {
                 String resultString = "";
                 for(int i = 0; i < 5; i++){
@@ -84,7 +96,9 @@ public class Board implements ActionListener, Runnable
                         resultString += "-";
                     }
                 }
-                guesses[numOfGuess].setEditable(false);
+                for(int i = 0; i < 5; i++){
+                    guesses[numOfGuess][i].setEditable(false);
+                }
                 System.out.println(resultString);
                 numOfGuess++;
                 if (numOfGuess == 6) {
@@ -93,15 +107,29 @@ public class Board implements ActionListener, Runnable
             //} else {
             //    System.out.println("Invalid Input");
             //}
+            
+    }
+}
+    public void keyPressed(){
+        if(curCol == 4){
+            
+        }
+        else{
+            curRow++;
         }
     }
-    public void closePopUp(String toDisplay)
-    {
+    public void keyReleased(){
+        
+    }
+    public void keyTyped(){
+        
+    }
+public void closePopUp(String toDisplay)
+{
         label.setText(toDisplay);
         guessButton.setEnabled(true);
     }
-    
-    public static void start() {
+public static void start() {
         SwingUtilities.invokeLater(new Board());
     }
 }
