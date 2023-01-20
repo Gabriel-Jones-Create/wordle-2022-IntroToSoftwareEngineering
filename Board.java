@@ -14,6 +14,7 @@ public class Board implements ActionListener, KeyListener, Runnable
     private int numOfGuess;
     private int curRow;
     private int curCol;
+    private int[] curFocus;
     
     public void run()
     {
@@ -74,7 +75,8 @@ public class Board implements ActionListener, KeyListener, Runnable
         System.out.println("Welcome to Wordle. Good Luck!");
         curCol = 0;
         curRow = 0;
-        setFocus(guesses[0][0]);
+        guesses[0][0].requestFocus();
+        curFocus = new int[]{0,0};
     }
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == guessButton) {
@@ -107,22 +109,29 @@ public class Board implements ActionListener, KeyListener, Runnable
             //} else {
             //    System.out.println("Invalid Input");
             //}
+            curFocus[0
+            
             
     }
 }
-    public void keyPressed(){
-        if(curCol == 4){
-            
-        }
-        else{
-            curRow++;
+public void keyPressed(KeyEvent e){
+    
+    if(curFocus[1] < 5){
+        e.consume();
+        guesses[curFocus[0]][curFocus[1]].setText(Character.toString(e.getKeyChar()));
+        guesses[curFocus[0]][curFocus[1] + 1].requestFocus();
+        curFocus[1] += 1;
+    }
+    if(!guesses[curFocus[0]][curFocus[1]].getText().equals("")){
+            guessButton.disable();
         }
     }
-    public void keyReleased(){
-        
+
+public void keyReleased(KeyEvent e){
+        e.consume();
     }
-    public void keyTyped(){
-        
+public void keyTyped(KeyEvent e){
+        e.consume();
     }
 public void closePopUp(String toDisplay)
 {
