@@ -15,9 +15,12 @@ public class Board implements ActionListener, KeyListener, Runnable
     private int curRow;
     private int curCol;
     private int[] curFocus;
+    private char[] alphabet;
     
     public void run()
     {
+        char[] alphabet = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q' , 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         numOfGuess = 0;
         // Create top-level container
         frame = new JFrame();
@@ -54,7 +57,7 @@ public class Board implements ActionListener, KeyListener, Runnable
                 mainPanel.add(guesses[i][j]);
             }
         }
-
+        // Setup Guess Button
         label.setLocation(50, 50);
         guessButton.setLocation(50, 225);
         label.setSize(200, 30);
@@ -68,7 +71,7 @@ public class Board implements ActionListener, KeyListener, Runnable
             {
                  winWord = word.returnWord();
             }
-            catch (java.io.IOException ioe)
+        catch (java.io.IOException ioe)
             {
                 ioe.printStackTrace();
             }
@@ -79,23 +82,26 @@ public class Board implements ActionListener, KeyListener, Runnable
         curFocus = new int[]{0,0};
     }
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == guessButton) {
-            WordDictionary word = new WordDictionary();
-            String guessWord = "";
+    if (event.getSource() == guessButton) {
+        WordDictionary word = new WordDictionary();
+        String guessWord = "";
+            // Assemble guessWord from boxes
             for(int i = 0; i < 5; i++){
-                guessWord = guessWord + guesses[numOfGuess][i];
+                guessWord = guessWord + guesses[numOfGuess][i].getText();
             }
             //if(word.isWordValid(guessWord)) {
                 String resultString = "";
                 for(int i = 0; i < 5; i++){
                     if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
-                        resultString += guessWord.substring(i,i+1).toUpperCase();
+                        //resultString += guessWord.substring(i,i+1).toUpperCase();
+                        guesses[numOfGuess][i].setBackground(Color.RED);
                     }
                     else if(winWord.contains(guessWord.substring(i,i+1))){
-                        resultString += guessWord.substring(i,i+1);
+                        //resultString += guessWord.substring(i,i+1);
+                        guesses[numOfGuess][i].setBackground(Color.BLUE);
                     }
                     else {
-                        resultString += "-";
+                        guesses[numOfGuess][i].setBackground(Color.GREEN);
                     }
                 }
                 for(int i = 0; i < 5; i++){
@@ -109,22 +115,30 @@ public class Board implements ActionListener, KeyListener, Runnable
             //} else {
             //    System.out.println("Invalid Input");
             //}
-            curFocus[0
-            
+    curFocus[0] += 1;
+    curFocus[1] = 0;
+    guesses[curFocus[0]][curFocus[1]].requestFocus();   
             
     }
+    
 }
 public void keyPressed(KeyEvent e){
-    
-    if(curFocus[1] < 5){
-        e.consume();
-        guesses[curFocus[0]][curFocus[1]].setText(Character.toString(e.getKeyChar()));
-        guesses[curFocus[0]][curFocus[1] + 1].requestFocus();
-        curFocus[1] += 1;
-    }
-    if(!guesses[curFocus[0]][curFocus[1]].getText().equals("")){
-            guessButton.disable();
+    e.consume();
+    String backspaceString = "/b";
+    if(e.getKeyCode() == 8){
+            guesses[curFocus[0]][curFocus[1]].setText(" ");
+            if(curFocus[1] != 0){
+                guesses[curFocus[0]][curFocus[1] - 1].requestFocus();
+                curFocus[1] -= 1;
         }
+    }
+    else if (curFocus[1] < 5){
+        guesses[curFocus[0]][curFocus[1]].setText(Character.toString(e.getKeyChar()).toUpperCase());
+        if (curFocus[1] != 4) {
+            curFocus[1] += 1;
+        }
+        guesses[curFocus[0]][curFocus[1]].requestFocus();
+    }
     }
 
 public void keyReleased(KeyEvent e){
