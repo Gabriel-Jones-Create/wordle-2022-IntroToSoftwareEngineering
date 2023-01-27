@@ -54,12 +54,13 @@ public class Board implements ActionListener, KeyListener, Runnable
                 guesses[i][j].setLocation(40 + j * 40, y);
                 guesses[i][j].setFont(font1);
                 guesses[i][j].addKeyListener(this);
+                guesses[i][j].setCaretColor(Color.RED);
                 mainPanel.add(guesses[i][j]);
             }
         }
         // Setup Guess Button
         label.setLocation(50, 50);
-        guessButton.setLocation(50, 225);
+        guessButton.setLocation(85, 225);
         label.setSize(200, 30);
         guessButton.setSize(100, 30);
         mainPanel.add(label);
@@ -89,19 +90,20 @@ public class Board implements ActionListener, KeyListener, Runnable
             for(int i = 0; i < 5; i++){
                 guessWord = guessWord + guesses[numOfGuess][i].getText();
             }
+            winWord = winWord.toUpperCase();
             //if(word.isWordValid(guessWord)) {
                 String resultString = "";
                 for(int i = 0; i < 5; i++){
                     if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
                         //resultString += guessWord.substring(i,i+1).toUpperCase();
-                        guesses[numOfGuess][i].setBackground(Color.RED);
+                        guesses[numOfGuess][i].setBackground(Color.GREEN);
                     }
                     else if(winWord.contains(guessWord.substring(i,i+1))){
                         //resultString += guessWord.substring(i,i+1);
-                        guesses[numOfGuess][i].setBackground(Color.BLUE);
+                        guesses[numOfGuess][i].setBackground(Color.YELLOW);
                     }
                     else {
-                        guesses[numOfGuess][i].setBackground(Color.GREEN);
+                        guesses[numOfGuess][i].setBackground(Color.GRAY);
                     }
                 }
                 for(int i = 0; i < 5; i++){
@@ -124,14 +126,32 @@ public class Board implements ActionListener, KeyListener, Runnable
 }
 public void keyPressed(KeyEvent e){
     e.consume();
-    String backspaceString = "/b";
+    //String backspaceString = "/b";
     if(e.getKeyCode() == 8){
-            guesses[curFocus[0]][curFocus[1]].setText(" ");
+        if(guesses[curFocus[0]][curFocus[1]].getText().equals(" ") || guesses[curFocus[0]][curFocus[1]].getText().equals(null)) {
             if(curFocus[1] != 0){
+                guesses[curFocus[0]][curFocus[1] - 1].setText(" ");
                 guesses[curFocus[0]][curFocus[1] - 1].requestFocus();
                 curFocus[1] -= 1;
+            }
+        } else {
+            if(curFocus[1] != 0){
+                guesses[curFocus[0]][curFocus[1]].setText(" ");
+            }
         }
-    }
+            
+            System.out.println("space");
+            if(curFocus[1] != 0){
+            guesses[curFocus[0]][curFocus[1] - 1].setText(" ");
+            guesses[curFocus[0]][curFocus[1] - 1].requestFocus();
+            curFocus[1] -= 1;
+            } else {
+            guesses[curFocus[0]][curFocus[1] - 1].setText(" ");
+        }
+        }
+        // if space then delete prev letter move cursor
+        // if letter then delete letter dont move cursor
+        
     else if (curFocus[1] < 5){
         guesses[curFocus[0]][curFocus[1]].setText(Character.toString(e.getKeyChar()).toUpperCase());
         if (curFocus[1] != 4) {
