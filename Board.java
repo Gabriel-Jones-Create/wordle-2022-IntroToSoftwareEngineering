@@ -16,10 +16,11 @@ public class Board implements ActionListener, KeyListener, Runnable
     private int curCol;
     private int[] curFocus;
     private String alphabet;
+    private int [] numInWinWord = new int[26];
     
     public void run()
     {
-       
+        
         numOfGuess = 0;
         // Create top-level container
         frame = new JFrame();
@@ -54,6 +55,8 @@ public class Board implements ActionListener, KeyListener, Runnable
                 guesses[i][j].setFont(font1);
                 guesses[i][j].addKeyListener(this);
                 guesses[i][j].setCaretColor(Color.white);
+                guesses[i][j].setForeground(Color.GRAY);
+                guesses[i][j].setHorizontalAlignment(JTextField.CENTER);
                 mainPanel.add(guesses[i][j]);
             }
         }
@@ -75,51 +78,63 @@ public class Board implements ActionListener, KeyListener, Runnable
             {
                 ioe.printStackTrace();
             }
+        numInWinWord = new int[26];
+        winWord = winWord.toUpperCase();
+         for(int i = 0; i < winWord.length(); i++){
+                    numInWinWord[winWord.charAt(i) - 65] += 1; 
+        }
         System.out.println("Welcome to Wordle. Good Luck!");
         curCol = 0;
         curRow = 0;
         guesses[0][0].requestFocus();
+        System.out.println(winWord);
         curFocus = new int[]{0,0};
+    }
+    private void onGuess(){
+            WordDictionary word = new WordDictionary();
+            String guessWord = "";
+            int [] tempNumInWinWord = numInWinWord;
+                // Assemble guessWord from boxes
+                for(int i = 0; i < 5; i++){
+                    guessWord = guessWord + guesses[numOfGuess][i].getText();
+                }
+                //if(word.isWordValid(guessWord)) {
+                    String resultString = "";
+                    for(int i = 0; i < 5; i++){
+                        if(winWord.contains(guessWord.substring(i,i+1))){
+                            if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
+                            //resultString += guessWord.substring(i,i+1).toUpperCase();
+                            tempNumInWinWord[winWord.charAt(i)-65]--; 
+                            guesses[numOfGuess][i].setBackground(Color.GREEN);
+                                }
+                            else if (tempNumInWinWord[winWord.charAt(i)-65] != 0){
+                            //resultString += guessWord.substring(i,i+1);
+                                guesses[numOfGuess][i].setBackground(Color.YELLOW);
+                            }
+                        }
+                        else {
+                                guesses[numOfGuess][i].setBackground(Color.GRAY);
+                                guesses[numOfGuess][i].setForeground(Color.WHITE);
+                            }
+                    }
+                    for(int i = 0; i < 5; i++){
+                        guesses[numOfGuess][i].setEditable(false);
+                    }
+                    System.out.println(resultString);
+                    numOfGuess++;
+                    if (numOfGuess == 6) {
+                        System.out.println("The word was: " + winWord);
+                    }
+                //} else {
+                //    System.out.println("Invalid Input");
+                //}
+        curFocus[0] += 1;
+        curFocus[1] = 0;
+        guesses[curFocus[0]][curFocus[1]].requestFocus();   
     }
     public void actionPerformed(ActionEvent event) {
     if (event.getSource() == guessButton) {
-        WordDictionary word = new WordDictionary();
-        String guessWord = "";
-            // Assemble guessWord from boxes
-            for(int i = 0; i < 5; i++){
-                guessWord = guessWord + guesses[numOfGuess][i].getText();
-            }
-            winWord = winWord.toUpperCase();
-            //if(word.isWordValid(guessWord)) {
-                String resultString = "";
-                for(int i = 0; i < 5; i++){
-                    if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
-                        //resultString += guessWord.substring(i,i+1).toUpperCase();
-                        guesses[numOfGuess][i].setBackground(Color.GREEN);
-                    }
-                    else if(winWord.contains(guessWord.substring(i,i+1))){
-                        //resultString += guessWord.substring(i,i+1);
-                        guesses[numOfGuess][i].setBackground(Color.YELLOW);
-                    }
-                    else {
-                        guesses[numOfGuess][i].setBackground(Color.GRAY);
-                    }
-                }
-                for(int i = 0; i < 5; i++){
-                    guesses[numOfGuess][i].setEditable(false);
-                }
-                System.out.println(resultString);
-                numOfGuess++;
-                if (numOfGuess == 6) {
-                    System.out.println("The word was: " + winWord);
-                }
-            //} else {
-            //    System.out.println("Invalid Input");
-            //}
-    curFocus[0] += 1;
-    curFocus[1] = 0;
-    guesses[curFocus[0]][curFocus[1]].requestFocus();   
-            
+        onGuess();
     }
     
 }
@@ -148,6 +163,9 @@ public void keyPressed(KeyEvent e){
                 }
             }
         }
+    else if(e.getKeyCode() == 10 && !guesses[curFocus[0]][4].equals("")){
+        onGuess();   
+    }
 }
 
 public void keyReleased(KeyEvent e){
