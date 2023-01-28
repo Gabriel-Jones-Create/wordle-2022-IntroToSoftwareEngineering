@@ -15,12 +15,11 @@ public class Board implements ActionListener, KeyListener, Runnable
     private int curRow;
     private int curCol;
     private int[] curFocus;
-    private char[] alphabet;
+    private String alphabet;
     
     public void run()
     {
-        char[] alphabet = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q' , 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+       
         numOfGuess = 0;
         // Create top-level container
         frame = new JFrame();
@@ -54,7 +53,7 @@ public class Board implements ActionListener, KeyListener, Runnable
                 guesses[i][j].setLocation(40 + j * 40, y);
                 guesses[i][j].setFont(font1);
                 guesses[i][j].addKeyListener(this);
-                guesses[i][j].setCaretColor(Color.RED);
+                guesses[i][j].setCaretColor(Color.white);
                 mainPanel.add(guesses[i][j]);
             }
         }
@@ -127,39 +126,29 @@ public class Board implements ActionListener, KeyListener, Runnable
 public void keyPressed(KeyEvent e){
     e.consume();
     //String backspaceString = "/b";
-    if(e.getKeyCode() == 8){
-        if(guesses[curFocus[0]][curFocus[1]].getText().equals(" ") || guesses[curFocus[0]][curFocus[1]].getText().equals(null)) {
-            if(curFocus[1] != 0){
-                guesses[curFocus[0]][curFocus[1] - 1].setText(" ");
-                guesses[curFocus[0]][curFocus[1] - 1].requestFocus();
-                curFocus[1] -= 1;
+     String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if(alphabet.contains(Character.toString(e.getKeyChar()))){
+        if (curFocus[1] < 5){
+            guesses[curFocus[0]][curFocus[1]].setText(Character.toString(e.getKeyChar()).toUpperCase());
+            if (curFocus[1] != 4) {
+                curFocus[1] += 1;
             }
-        } else {
+            guesses[curFocus[0]][curFocus[1]].requestFocus();
+        }
+    }
+    else if(e.getKeyCode() == 8){// if its a backspace character
             if(curFocus[1] != 0){
-                guesses[curFocus[0]][curFocus[1]].setText(" ");
+                if(guesses[curFocus[0]][curFocus[1]].getText().equals("")) {
+                    guesses[curFocus[0]][curFocus[1] - 1].requestFocus();
+                    guesses[curFocus[0]][curFocus[1] - 1].setText("");
+                    curFocus[1] -= 1;
+                } 
+                else{
+                    guesses[curFocus[0]][curFocus[1]].setText("");
+                }
             }
         }
-            
-            System.out.println("space");
-            if(curFocus[1] != 0){
-            guesses[curFocus[0]][curFocus[1] - 1].setText(" ");
-            guesses[curFocus[0]][curFocus[1] - 1].requestFocus();
-            curFocus[1] -= 1;
-            } else {
-            guesses[curFocus[0]][curFocus[1] - 1].setText(" ");
-        }
-        }
-        // if space then delete prev letter move cursor
-        // if letter then delete letter dont move cursor
-        
-    else if (curFocus[1] < 5){
-        guesses[curFocus[0]][curFocus[1]].setText(Character.toString(e.getKeyChar()).toUpperCase());
-        if (curFocus[1] != 4) {
-            curFocus[1] += 1;
-        }
-        guesses[curFocus[0]][curFocus[1]].requestFocus();
-    }
-    }
+}
 
 public void keyReleased(KeyEvent e){
         e.consume();
