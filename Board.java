@@ -107,16 +107,17 @@ public class Board implements ActionListener, KeyListener, Runnable
                             tempNumInWinWord[winWord.charAt(i)-65]--; 
                             guesses[numOfGuess][i].setBackground(Color.GREEN);
                                 }
-                            else if (tempNumInWinWord[winWord.charAt(i)-65] != 0){
+                        }
+                    }
+                    for(int i = 0; i < 5; i++){
+                        if (tempNumInWinWord[winWord.charAt(i)-65] != 0 && winWord.contains(guessWord.substring(i,i+1))){
                             //resultString += guessWord.substring(i,i+1);
                                 guesses[numOfGuess][i].setBackground(Color.YELLOW);
                             }
-                        }
-                        else {
+                            else if(!winWord.contains(guessWord.substring(i,i+1)))
                                 guesses[numOfGuess][i].setBackground(Color.GRAY);
-                                guesses[numOfGuess][i].setForeground(Color.WHITE);
+                                guesses[numOfGuess][i].setForeground(Color.WHITE); 
                             }
-                    }
                     for(int i = 0; i < 5; i++){
                         guesses[numOfGuess][i].setEditable(false);
                     }
