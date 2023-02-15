@@ -17,10 +17,10 @@ public class Board implements ActionListener, KeyListener, Runnable
     private int[] curFocus;
     private String alphabet;
     private int [] numInWinWord = new int[26];
-    
+    private DBInterface access;
     public void run()
     {
-        
+        access = new DBInterface("WordleData.accdb");
         numOfGuess = 0;
         // Create top-level container
         frame = new JFrame();
@@ -80,9 +80,6 @@ public class Board implements ActionListener, KeyListener, Runnable
             }
         numInWinWord = new int[26];
         winWord = winWord.toUpperCase();
-         for(int i = 0; i < winWord.length(); i++){
-                    numInWinWord[winWord.charAt(i) - 65] += 1; 
-        }
         System.out.println("Welcome to Wordle. Good Luck!");
         curCol = 0;
         curRow = 0;
@@ -91,8 +88,11 @@ public class Board implements ActionListener, KeyListener, Runnable
         curFocus = new int[]{0,0};
     }
     private void onGuess(){
-            WordDictionary word = new WordDictionary();
+            //WordDictionary word = new WordDictionary();
             String guessWord = "";
+            for(int i = 0; i < winWord.length(); i++){
+                    numInWinWord[winWord.charAt(i) - 65] += 1; 
+            }
             int [] tempNumInWinWord = numInWinWord;
                 // Assemble guessWord from boxes
                 for(int i = 0; i < 5; i++){
@@ -110,7 +110,7 @@ public class Board implements ActionListener, KeyListener, Runnable
                         }
                     }
                     for(int i = 0; i < 5; i++){
-                        if (tempNumInWinWord[winWord.charAt(i)-65] != 0 && winWord.contains(guessWord.substring(i,i+1))){
+                        if (tempNumInWinWord[winWord.charAt(i)-65] != 0 && winWord.contains(guessWord.substring(i,i+1)) && !guesses[numOfGuess][i].getBackground().equals(Color.GREEN)){
                             //resultString += guessWord.substring(i,i+1);
                                 guesses[numOfGuess][i].setBackground(Color.YELLOW);
                             }
