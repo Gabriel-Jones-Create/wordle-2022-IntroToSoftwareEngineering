@@ -16,7 +16,7 @@ public class Board implements ActionListener, KeyListener, Runnable
     private int curCol;
     private int[] curFocus;
     private String alphabet;
-    private int [] numInWinWord = new int[26];
+    private int [] numInWinWord;
     private DBInterface access;
     public void run()
     {
@@ -80,6 +80,9 @@ public class Board implements ActionListener, KeyListener, Runnable
             }
         numInWinWord = new int[26];
         winWord = winWord.toUpperCase();
+        for(int i = 0; i < winWord.length(); i++){
+                numInWinWord[winWord.charAt(i) - 65] += 1; 
+        }
         System.out.println("Welcome to Wordle. Good Luck!");
         curCol = 0;
         curRow = 0;
@@ -88,17 +91,20 @@ public class Board implements ActionListener, KeyListener, Runnable
         curFocus = new int[]{0,0};
     }
     private void onGuess(){
-            //WordDictionary word = new WordDictionary();
             String guessWord = "";
-            for(int i = 0; i < winWord.length(); i++){
+            /*for(int i = 0; i < winWord.length(); i++){
                     numInWinWord[winWord.charAt(i) - 65] += 1; 
+            }*/
+            int [] tempNumInWinWord = new int[26];
+            for(int i = 0; i < 26; i++){
+                tempNumInWinWord[i] = numInWinWord[i];
             }
-            int [] tempNumInWinWord = numInWinWord;
                 // Assemble guessWord from boxes
                 for(int i = 0; i < 5; i++){
                     guessWord = guessWord + guesses[numOfGuess][i].getText();
                 }
                 //if(word.isWordValid(guessWord)) {
+                    if(access.gotAWord(guessWord) || true){
                     String resultString = "";
                     for(int i = 0; i < 5; i++){
                         if(winWord.contains(guessWord.substring(i,i+1))){
@@ -110,13 +116,16 @@ public class Board implements ActionListener, KeyListener, Runnable
                         }
                     }
                     for(int i = 0; i < 5; i++){
-                        if (tempNumInWinWord[winWord.charAt(i)-65] != 0 && winWord.contains(guessWord.substring(i,i+1)) && !guesses[numOfGuess][i].getBackground().equals(Color.GREEN)){
+                        int alfaIndex = guessWord.charAt(i)-65;
+                        if (tempNumInWinWord[alfaIndex] != 0 && winWord.contains(Character.toString(guessWord.charAt(i))) && !guesses[numOfGuess][i].getBackground().equals(Color.GREEN)){
                             //resultString += guessWord.substring(i,i+1);
                                 guesses[numOfGuess][i].setBackground(Color.YELLOW);
+                                tempNumInWinWord[alfaIndex]--;
                             }
-                            else if(!winWord.contains(guessWord.substring(i,i+1)))
+                            else if(!guesses[numOfGuess][i].getBackground().equals(Color.GREEN) && !guesses[numOfGuess][i].getBackground().equals(Color.YELLOW)){
                                 guesses[numOfGuess][i].setBackground(Color.GRAY);
                                 guesses[numOfGuess][i].setForeground(Color.WHITE); 
+                                }
                             }
                     for(int i = 0; i < 5; i++){
                         guesses[numOfGuess][i].setEditable(false);
@@ -131,7 +140,12 @@ public class Board implements ActionListener, KeyListener, Runnable
                 //}
         curFocus[0] += 1;
         curFocus[1] = 0;
-        guesses[curFocus[0]][curFocus[1]].requestFocus();   
+        guesses[curFocus[0]][curFocus[1]].requestFocus();
+    }
+    else{
+        System.out.println("Please enter valid word");
+        guesses[curFocus[0]][curFocus[1]].requestFocus();
+    }
     }
     public void actionPerformed(ActionEvent event) {
     if (event.getSource() == guessButton) {

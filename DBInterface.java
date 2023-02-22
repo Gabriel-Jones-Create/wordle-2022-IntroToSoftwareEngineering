@@ -43,15 +43,25 @@ public class DBInterface
         try {
             Statement s = dbConn.createStatement();
             ResultSet rs = s.executeQuery(
-                    "SELECT * FROM Guess_Word WHERE Word = " + str);
-            return rs.getFetchSize() >= 1;
+                    "SELECT * FROM Guess_Word WHERE Word = \'" + str +"\'");
+            return rs.next();
             
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-    public void testWord(String s){
-        
+    public String generateWord(){
+        try {
+            Statement s = dbConn.createStatement();
+            ResultSet rs = s.executeQuery(
+                    "SELECT word FROM Game_Word ORDER BY RAND() LIMIT 1");
+            System.out.println(rs.toString());
+            return rs.toString();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  null;
     }
 }
