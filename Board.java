@@ -69,6 +69,7 @@ public class Board implements ActionListener, KeyListener, Runnable
         mainPanel.add(guessButton);
         
         frame.setVisible(true);
+        /*
         WordDictionary word = new WordDictionary();
         try
             {
@@ -78,6 +79,8 @@ public class Board implements ActionListener, KeyListener, Runnable
             {
                 ioe.printStackTrace();
             }
+            */
+        winWord = access.generateWord();
         numInWinWord = new int[26];
         winWord = winWord.toUpperCase();
         for(int i = 0; i < winWord.length(); i++){

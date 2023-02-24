@@ -55,9 +55,12 @@ public class DBInterface
         try {
             Statement s = dbConn.createStatement();
             ResultSet rs = s.executeQuery(
-                    "SELECT word FROM Game_Word ORDER BY RAND() LIMIT 1");
-            System.out.println(rs.toString());
-            return rs.toString();
+                    "SELECT TOP 1 word FROM (SELECT G1.word, (SELECT (COUNT(*) + 1)" +
+                    " FROM Game_Word as G2 WHERE G2.word < G1.word) AS row_num FROM Game_Word AS G1) " +
+                    "ORDER BY MOD(row_num * RND() * 100000, 100000)");
+            rs.next();
+            System.out.println(rs.getString(1));
+            return rs.getString(1);
             
         } catch (Exception e) {
             e.printStackTrace();
