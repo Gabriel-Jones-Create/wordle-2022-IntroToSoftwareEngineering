@@ -56,7 +56,7 @@ public class DBInterface
             Statement s = dbConn.createStatement();
             ResultSet rs = s.executeQuery(
                     "SELECT TOP 1 word FROM (SELECT G1.word, (SELECT (COUNT(*) + 1)" +
-                    " FROM Game_Word as G2 WHERE G2.word < G1.word) AS row_num FROM Game_Word AS G1) " +
+                    " FROM Game_Word as G2 WHERE G2.word < G1.word) AS row_num FROM Game_Word AS G1 WHERE last_used < DATE() - 60 OR last_used is NULL) " +
                     "ORDER BY MOD(row_num * RND() * 100000, 100000)");
             rs.next();
             System.out.println(rs.getString(1));
@@ -66,6 +66,26 @@ public class DBInterface
             e.printStackTrace();
         }
         return  null;
+    }
+    public boolean updateLastUsed(String winWord) {
+        try {
+            Statement s = dbConn.createStatement();
+            String sql =
+                    "UPDATE Game_Word " +
+                    "SET last_used = DATE() " + 
+                    " WHERE word = \"" + winWord + "\"" +
+                    ";";
+            System.out.println(sql);
+            int result = s.executeUpdate(sql);
+            if (result == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     public void addGame(String gameWord, int numGuess, boolean winLose) {
         try {
@@ -79,5 +99,20 @@ public class DBInterface
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public int getWordDate(String winWord) {
+        try {
+            Statement s = dbConn.createStatement();
+            ResultSet rs = s.executeQuery(
+                    "SELECT last_used FROM Game_Word" +
+                    "WHERE word = \"" + winWord + "\";");
+            rs.next();
+            System.out.println(rs.getString(1));
+            return Integer.parseInt(rs.getString(1));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

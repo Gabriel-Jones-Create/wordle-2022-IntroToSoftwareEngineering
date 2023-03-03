@@ -82,7 +82,8 @@ public class Board implements ActionListener, KeyListener, Runnable
             */
         winWord = access.generateWord();
         numInWinWord = new int[26];
-        winWord = winWord.toUpperCase();
+        access.updateLastUsed(winWord);
+       winWord = winWord.toUpperCase();
         for(int i = 0; i < winWord.length(); i++){
                 numInWinWord[winWord.charAt(i) - 65] += 1; 
         }
@@ -92,6 +93,11 @@ public class Board implements ActionListener, KeyListener, Runnable
         guesses[0][0].requestFocus();
         System.out.println(winWord);
         curFocus = new int[]{0,0};
+        while(true){
+        winWord = access.generateWord();
+        numInWinWord = new int[26];
+        access.updateLastUsed(winWord);
+    }
     }
     private void onGuess(){
             String guessWord = "";
@@ -110,8 +116,10 @@ public class Board implements ActionListener, KeyListener, Runnable
                     if(access.gotAWord(guessWord)){
                         if(winWord.equals(guessWord)){
                             System.out.println("you won");
+                            access.addGame(winWord, numOfGuess + 1, true);
                             frame.disable();
                         }
+                        
                     for(int i = 0; i < 5; i++){
                         if(winWord.contains(guessWord.substring(i,i+1))){
                             if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
@@ -137,8 +145,10 @@ public class Board implements ActionListener, KeyListener, Runnable
                         guesses[numOfGuess][i].setEditable(false);
                     }
                     numOfGuess++;
-                    if (numOfGuess == 6) {
+                    if (numOfGuess == 6 && !winWord.equals(guessWord)) {
                         System.out.println("The word was: " + winWord);
+                        access.addGame(winWord, numOfGuess + 1, false);
+                        frame.disable();
                     }
                 //} else {
                 //    System.out.println("Invalid Input");
