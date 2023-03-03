@@ -67,4 +67,17 @@ public class DBInterface
         }
         return  null;
     }
+    public void addGame(String gameWord, int numGuess, boolean winLose) {
+        try {
+            Statement s = dbConn.createStatement();
+            String sql = 
+                    "INSERT INTO History (gameDate, gameWord, numGuess, winLose) " +
+                    "VALUES ( DATE() , \"" + 
+                    gameWord + "\", " + numGuess + ", " + winLose + ")";
+            System.out.println(sql);
+            s.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

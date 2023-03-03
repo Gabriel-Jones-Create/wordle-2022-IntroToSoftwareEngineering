@@ -107,8 +107,11 @@ public class Board implements ActionListener, KeyListener, Runnable
                     guessWord = guessWord + guesses[numOfGuess][i].getText();
                 }
                 //if(word.isWordValid(guessWord)) {
-                    if(access.gotAWord(guessWord) || true){
-                    String resultString = "";
+                    if(access.gotAWord(guessWord)){
+                        if(winWord.equals(guessWord)){
+                            System.out.println("you won");
+                            frame.disable();
+                        }
                     for(int i = 0; i < 5; i++){
                         if(winWord.contains(guessWord.substring(i,i+1))){
                             if(guessWord.substring(i,i+1).equals(winWord.substring(i,i+1))){
@@ -133,7 +136,6 @@ public class Board implements ActionListener, KeyListener, Runnable
                     for(int i = 0; i < 5; i++){
                         guesses[numOfGuess][i].setEditable(false);
                     }
-                    System.out.println(resultString);
                     numOfGuess++;
                     if (numOfGuess == 6) {
                         System.out.println("The word was: " + winWord);
@@ -141,9 +143,11 @@ public class Board implements ActionListener, KeyListener, Runnable
                 //} else {
                 //    System.out.println("Invalid Input");
                 //}
+        if(curFocus[0] < guesses.length - 1){
         curFocus[0] += 1;
         curFocus[1] = 0;
         guesses[curFocus[0]][curFocus[1]].requestFocus();
+        }
     }
     else{
         System.out.println("Please enter valid word");
