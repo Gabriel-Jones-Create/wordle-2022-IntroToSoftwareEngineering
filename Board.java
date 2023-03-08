@@ -85,7 +85,7 @@ public class Board implements ActionListener, KeyListener, Runnable
         access.updateLastUsed(winWord);
        winWord = winWord.toUpperCase();
         for(int i = 0; i < winWord.length(); i++){
-                numInWinWord[winWord.charAt(i) - 65] += 1; 
+                numInWinWord[winWord.charAt(i) - 65] += 1;
         }
         System.out.println("Welcome to Wordle. Good Luck!");
         curCol = 0;
@@ -93,11 +93,7 @@ public class Board implements ActionListener, KeyListener, Runnable
         guesses[0][0].requestFocus();
         System.out.println(winWord);
         curFocus = new int[]{0,0};
-        while(true){
-        winWord = access.generateWord();
-        numInWinWord = new int[26];
-        access.updateLastUsed(winWord);
-    }
+        access.displayHistory();
     }
     private void onGuess(){
             String guessWord = "";

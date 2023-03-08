@@ -67,7 +67,7 @@ public class DBInterface
         }
         return  null;
     }
-    public boolean updateLastUsed(String winWord) {
+    public void updateLastUsed(String winWord) {
         try {
             Statement s = dbConn.createStatement();
             String sql =
@@ -76,15 +76,15 @@ public class DBInterface
                     " WHERE word = \"" + winWord + "\"" +
                     ";";
             System.out.println(sql);
-            int result = s.executeUpdate(sql);
+            /*int result = s.executeUpdate(sql);
             if (result == 1) {
                 return true;
             } else {
                 return false;
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            //return false;
         }
     }
     public void addGame(String gameWord, int numGuess, boolean winLose) {
@@ -114,5 +114,20 @@ public class DBInterface
             e.printStackTrace();
         }
         return 0;
+    }
+    public void displayHistory(){
+        try {
+            Statement s = dbConn.createStatement();
+            ResultSet rs = s.executeQuery(
+                    "SELECT History.numGuess, COUNT(History.WinLose) FROM History WHERE WinLose = yes" +
+                    " GROUP BY numGuess ORDER BY numGuess;");
+                    System.out.println("Guesses:              Wins:");
+            while(rs.next()){
+            System.out.println("        " + rs.getString(1) + "                  "+ rs.getString(2));
+        }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
